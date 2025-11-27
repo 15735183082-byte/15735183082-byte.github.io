@@ -364,6 +364,8 @@
             }
         }
     </style>
+    
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
 </head>
 
 <body>
@@ -387,7 +389,25 @@
             </div>
         </div>
     </div>
-
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.addEventListener('click', function() {
+                console.log("HTML 被点击了！");
+                wx.miniProgram.redirectTo({
+                    url: '/pages/index/index', 
+                    success: function() {
+                        console.log("跳转成功");
+                    },
+                    fail: function(err) {
+                        console.log("跳转失败原因：", err);
+                        wx.miniProgram.switchTab({
+                            url: '/pages/index/index'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 
 </body>
 
