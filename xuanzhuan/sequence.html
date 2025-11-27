@@ -393,7 +393,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.body.addEventListener('click', function() {
                 console.log("HTML 被点击了！");
-                wx.miniProgram.redirectTo({
+                wx.miniProgram.reLaunch({
                     url: '/pages/index/index', 
                     success: function() {
                         console.log("跳转成功");
