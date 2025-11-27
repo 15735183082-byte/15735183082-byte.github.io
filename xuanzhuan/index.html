@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全球创新区诊断系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            background-color: rgb(229, 0, 18);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            position: relative;
+            /* Add relative positioning */
+            z-index: 1;
+            /* Ensure container is on top */
+        }
+
+        .header {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            position: relative;
+            /* Ensure z-index is effective */
+            z-index: 2;
+            /* Force header to be on top */
+        }
+
+        .logo {
+            width: 120px;
+            /* Increased logo size */
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 100%;
+            height: auto;
+        }
+
+        .title {
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+        }
+
+        .canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 0;
+            /* Ensure canvas is in the background */
+        }
+
+        canvas {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+        }
+
+        .footer {
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+            color: white;
+            font-size: 12px;
+        }
+
+        .footer-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .footer-subtitle {
+            font-size: 11px;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 20px;
+            }
+
+            .subtitle {
+                font-size: 12px;
+            }
+
+            .logo {
+                width: 60px;
+                height: 60px;
+            }
+
+            .footer-title {
+                font-size: 16px;
+            }
+
+            .footer-subtitle {
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 18px;
+            }
+
+            .subtitle {
+                font-size: 11px;
+            }
+
+            .logo {
+                width: 50px;
+                height: 50px;
+                margin-bottom: 15px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .header {
+                padding: 15px 0;
+            }
+
+            .footer {
+                padding: 15px 0;
+            }
+
+            .footer-title {
+                font-size: 14px;
+            }
+
+            .footer-subtitle {
+                font-size: 9px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="canvas-container">
+        <canvas id="canvas"></canvas>
+    </div>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="logo.png" alt="Logo">
+            </div>
+            <div class="title">城市品牌</div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-title">城市决策</div>
+            <div class="footer-subtitle" style="margin-top: 10px;">TOP创新区研究院<br>FTA Group</div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // 响应式设置canvas大小
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            const dpr = window.devicePixelRatio || 1;
+            const width = Math.min(container.clientWidth, 400);
+            const height = Math.min(container.clientHeight, 400);
+            // Set the CSS size
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            // Set the internal pixel buffer size scaled by DPR
+            canvas.width = Math.round(width * dpr);
+            canvas.height = Math.round(height * dpr);
+            // Prepare context to draw in CSS pixels
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // 钻石顶点坐标
+        const vertices = [
+            { x: 0, y: -0.75, z: 0 }, // Top vertex (height 0.75)
+            // Middle vertices (pentagon)
+            { x: 1, y: 0, z: 0 },
+            { x: Math.cos(2 * Math.PI / 5), y: 0, z: Math.sin(2 * Math.PI / 5) },
+            { x: Math.cos(4 * Math.PI / 5), y: 0, z: Math.sin(4 * Math.PI / 5) },
+            { x: Math.cos(6 * Math.PI / 5), y: 0, z: Math.sin(6 * Math.PI / 5) },
+            { x: Math.cos(8 * Math.PI / 5), y: 0, z: Math.sin(8 * Math.PI / 5) },
+            { x: 0, y: 1.5, z: 0 }  // Bottom vertex (height 1.5)
+        ];
+
+        // 文字标签
+        const labels = [
+            '高远见的政策治理',
+            '高质量的产业生态',
+            '高适配的交往场景',
+            '高赋能的服务网络',
+            '高共情的文化社群'
+        ];
+
+        // 每个标签的两行文本，确保更清晰
+        const labelLines = [
+            ['高远见的', '政策治理'],
+            ['高质量的', '产业生态'],
+            ['高适配的', '交往场景'],
+            ['高赋能的', '服务网络'],
+            ['高共情的', '文化社群']
+        ];
+
+
+        let rotation = 0;
+
+        function rotatePoint(point, angleX, angleY) {
+            // 1. Rotate around Y-axis (spin)
+            const cosY = Math.cos(angleY);
+            const sinY = Math.sin(angleY);
+            const x1 = point.x * cosY - point.z * sinY;
+            const z1 = point.x * sinY + point.z * cosY;
+
+            // 2. Rotate around X-axis (tilt)
+            const cosX = Math.cos(angleX);
+            const sinX = Math.sin(angleX);
+            const y2 = point.y * cosX - z1 * sinX;
+            const z2 = point.y * sinX + z1 * cosX;
+
+            return {
+                x: x1,
+                y: y2,
+                z: z2
+            };
+        }
+
+        function project(point, scale) {
+            const distance = 5;
+            const z = point.z + distance;
+            const scale2d = scale / z;
+
+            return {
+                x: point.x * scale2d,
+                y: point.y * scale2d,
+                z: z
+            };
+        }
+
+
+        // Helper to draw rounded rectangle
+        function drawRoundedRect(ctx, x, y, width, height, radius = 6) {
+            const r = Math.min(radius, width / 2, height / 2);
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + width - r, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+            ctx.lineTo(x + width, y + height - r);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+            ctx.lineTo(x + r, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+        }
+
+        function drawDiamond() {
+            const dpr = window.devicePixelRatio || 1;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            const drawWidth = canvas.width / dpr;
+            const drawHeight = canvas.height / dpr;
+            ctx.clearRect(0, 0, drawWidth, drawHeight);
+
+            const centerX = drawWidth / 2;
+            const centerY = drawHeight / 2;
+            const scale = Math.min(drawWidth, drawHeight) * 1.2
+
+            const angleX = -0.3; // Negative angle to tilt top vertex outwards
+            const angleY = rotation;
+
+            const rotatedVertices = vertices.map(v => rotatePoint(v, angleX, angleY));
+
+            const projectedVertices = rotatedVertices.map(v => {
+                const proj = project(v, scale);
+                return {
+                    x: centerX + proj.x,
+                    y: centerY + proj.y,
+                    z: proj.z
+                };
+            });
+
+            // 绘制边线
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.lineWidth = 1.5;
+
+            const edges = [
+                [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], // Top cone
+                [1, 2], [2, 3], [3, 4], [4, 5], [5, 1], // Middle ring
+                [6, 1], [6, 2], [6, 3], [6, 4], [6, 5]  // Bottom cone
+            ];
+
+            for (const edge of edges) {
+                const p1 = projectedVertices[edge[0]];
+                const p2 = projectedVertices[edge[1]];
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.stroke();
+            }
+
+            // 绘制中间平面底纹
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.beginPath();
+            ctx.moveTo(projectedVertices[1].x, projectedVertices[1].y);
+            for (let i = 2; i <= 5; i++) {
+                ctx.lineTo(projectedVertices[i].x, projectedVertices[i].y);
+            }
+            ctx.closePath();
+            ctx.fill();
+
+            // 绘制顶点
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            for (const vertex of projectedVertices) {
+                ctx.beginPath();
+                ctx.arc(vertex.x, vertex.y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // 绘制文字标签（带半透明底和投影，清晰度更高）
+            const labelPositions = [
+                { vertex: 1, offset: { x: 0, y: 25 } },
+                { vertex: 2, offset: { x: 0, y: 25 } },
+                { vertex: 3, offset: { x: 0, y: 25 } },
+                { vertex: 4, offset: { x: 0, y: 25 } },
+                { vertex: 5, offset: { x: 0, y: 25 } }
+            ];
+
+            const lineHeight = 18;
+            const padX = 10;
+            const padY = 8;
+            ctx.font = 'bold 14px "San Francisco", sans-serif';
+            ctx.textAlign = 'center';
+
+            for (let i = 0; i < labelPositions.length; i++) {
+                const pos = labelPositions[i];
+                const vertex = projectedVertices[pos.vertex];
+                const x = vertex.x + pos.offset.x;
+                const y = vertex.y + pos.offset.y;
+
+                const lines = labelLines[i];
+                // 计算背景宽高
+                const w = Math.max(...lines.map(t => ctx.measureText(t).width)) + padX * 2;
+                const h = lines.length * lineHeight + padY * 2;
+                const bx = x - w / 2;
+                const by = y - padY; // 顶点正下方，稍微上移Padding
+
+                // 背景
+                ctx.save();
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
+                ctx.lineWidth = 1;
+                drawRoundedRect(ctx, bx, by, w, h, 6);
+                ctx.fill();
+                ctx.stroke();
+
+                // 文字
+                ctx.fillStyle = 'white';
+                ctx.textBaseline = 'top';
+                ctx.shadowColor = 'rgba(0,0,0,0.35)';
+                ctx.shadowBlur = 2;
+                ctx.shadowOffsetY = 1;
+                for (let j = 0; j < lines.length; j++) {
+                    const line = lines[j];
+                    ctx.fillText(line, x, by + padY + j * lineHeight);
+                }
+                ctx.restore();
+            }
+
+            rotation -= 0.005;
+
+            requestAnimationFrame(drawDiamond);
+        }
+
+        drawDiamond();
+    </script>
+</body>
+
+</html>
