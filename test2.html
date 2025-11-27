@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>引导页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .desc {
+            font-size: 18px;
+            margin-bottom: 40px;
+            text-align: center;
+            padding: 0 20px;
+        }
+        .tip {
+            font-size: 16px;
+            opacity: 0.8;
+            position: fixed;
+            bottom: 60px;
+            text-align: center;
+            padding: 0 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">欢迎使用</div>
+    <div class="desc">这是引导页，2秒后自动跳转<br>或点击任意位置快速跳过</div>
+    <div class="tip">正在为您准备测评...</div>
+
+    <!-- 可选：添加简单动画（心跳效果） -->
+    <style>
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .title {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</body>
+</html>
