@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>全球创新区营造诊断系统</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #e50012;
+      touch-action: none;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    canvas {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.161.0/build/three.module.js"
+  }
+}
+</script>
+
+  <script type="module">
+    import * as THREE from "three";
+    import { OrbitControls } from "https://unpkg.com/three@0.161.0/examples/jsm/controls/OrbitControls.js";
+    import { CSS2DRenderer, CSS2DObject } from "https://unpkg.com/three@0.161.0/examples/jsm/renderers/CSS2DRenderer.js";
+
+    // Scene
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0xe50012, 0.18);
+
+    const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 100);
+    camera.position.set(0, 1.6, 6);
+
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: false
+    });
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setClearColor(0xe50012);
+    document.body.appendChild(renderer.domElement);
+
+    const labelRenderer = new CSS2DRenderer();
+    labelRenderer.setSize(innerWidth, innerHeight);
+    labelRenderer.domElement.style.position = 'absolute';
+    labelRenderer.domElement.style.top = '0';
+    labelRenderer.domElement.style.left = '0';
+    labelRenderer.domElement.style.pointerEvents = 'none';
+    document.body.appendChild(labelRenderer.domElement);
+
+    // Controls - 禁用所有交互
+    const controls = new OrbitControls(camera, labelRenderer.domElement);
+    controls.enableDamping = false;
+    controls.enablePan = false;
+    controls.enableZoom = false;
+    controls.enableRotate = false;
+    controls.enabled = false;
+
+    // 组织结构：
+    // clusterGroup 用于整体平移（包含旋转层和与其配套的固定元素：品牌/决策）
+    // rotatingGroup 中间五高钻石模型与连线（会旋转）
+    // clusterFixedGroup 品牌与决策节点/文字（不旋转，但跟随整体平移）
+    // fixedGroup 其他固定文本（如顶部 TOP、公司信息等）
+    const clusterGroup = new THREE.Group();
+    scene.add(clusterGroup);
+
+    const rotatingGroup = new THREE.Group();
+    const clusterFixedGroup = new THREE.Group();
+    const fixedGroup = new THREE.Group();
+
+    clusterGroup.add(rotatingGroup);
+    clusterGroup.add(clusterFixedGroup);
+    scene.add(fixedGroup);
+
+    // 调整图形大小比例
+    const scaleFactor = Math.min(innerWidth, innerHeight) / 800;
+    rotatingGroup.scale.set(scaleFactor, scaleFactor, scaleFactor);
+    clusterFixedGroup.scale.set(scaleFactor, scaleFactor, scaleFactor);
+    fixedGroup.scale.set(scaleFactor, scaleFactor, scaleFactor);
+
+    // 创建正五边形顶点
+    function createPentagonVertices(radius, centerY) {
+      const vertices = [];
+      for (let i = 0; i < 5; i++) {
+        // 计算正五边形的顶点位置（均匀分布在圆周上）
+        const angle = (i * 2 * Math.PI) / 5 - Math.PI / 2; // 偏移90度使一个顶点朝上
+        const x = radius * Math.cos(angle);
+        const z = radius * Math.sin(angle);
+        vertices.push(new THREE.Vector3(x, centerY, z));
+      }
+      return vertices;
+    }
+
+    // 使用正五边形顶点
+    const radius = 1.0; // 基础五边形半径
+    const diamondScale = 1.5; // 钻石模型等比例缩放系数
+    // 整体模型的Y向偏移（向下为负），用于保持形状不变地整体平移
+    const clusterOffsetY = -0.8;
+    clusterGroup.position.y = clusterOffsetY;
+    const centerY = 1.3; // 中心Y坐标（保持形状不变）
+    const pentagonVertices = createPentagonVertices(radius, centerY);
+
+    // Points - 根据正五边形布局调整位置
+    const P = {
+      brand: new THREE.Vector3(0, 2, 0),        // 顶部：城市品牌（保持原相对位置）
+      industry: pentagonVertices[0],            // 正上方：高质量的产业生态
+      policy: pentagonVertices[1],              // 右上：高远见的政策治理
+      service: pentagonVertices[2],             // 右下：高赋能的服务网络
+      culture: pentagonVertices[3],             // 左下：高共情的文化社群
+      sceneC: pentagonVertices[4],              // 左上：高适配的交往场景
+      decision: new THREE.Vector3(0, -0.5, 0),  // 底部：城市决策（保持原相对位置）
+      center: new THREE.Vector3(0, centerY, 0)  // 中心点
+    };
+    // 等比例放大完整钻石（围绕中心点缩放，包含顶部“品牌”和底部“决策”顶点），
+    // 仅改变几何尺寸，不改变文字字号
+    if (diamondScale !== 1) {
+      const pivot = new THREE.Vector3(0, centerY, 0);
+      const keys = ['brand', 'industry', 'policy', 'service', 'culture', 'sceneC', 'decision'];
+      for (const k of keys) {
+        P[k] = P[k].clone().sub(pivot).multiplyScalar(diamondScale).add(pivot);
+      }
+    }
+
+
+    // Nodes - 白色节点
+    const mat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const big = new THREE.SphereGeometry(0.03, 24, 24);
+    const small = new THREE.SphereGeometry(0.03, 24, 24);
+
+    // 将中间的五高钻石模型节点添加到旋转组
+    Object.keys(P).forEach((key, i) => {
+      // 顶部和底部节点不旋转，添加到固定组
+      if (key === 'brand' || key === 'decision') {
+        const m = new THREE.Mesh(big, mat);
+        m.position.copy(P[key]);
+        clusterFixedGroup.add(m);
+      } else {
+        // 中间的五高钻石模型节点添加到旋转组
+        const m = new THREE.Mesh(i < 2 ? big : small, mat);
+        m.position.copy(P[key]);
+        rotatingGroup.add(m);
+      }
+    });
+
+    // 创建所有文本标签（包括中间文本和底部公司信息）
+    const textConfigs = [
+      {
+        content: "城市品牌",
+        position: P.brand,
+        fontSize: '14px',
+        offset: new THREE.Vector3(0, 0.2, 0),
+        clusterFixed: true
+      },
+      {
+        content: "城市决策",
+        position: P.decision,
+        fontSize: '14px',
+        offset: new THREE.Vector3(0, -0.2, 0),
+        clusterFixed: true
+      },
+      {
+        content: "TOP\n全球首个创新区诊断体系",
+        position: new THREE.Vector3(0, 3.5, 0), // 移到页面顶部居中
+        fontSize: '16px',
+        customStyle: true
+      },
+      {
+        content: "TOP创新区研究院\nFTA Group",
+        position: new THREE.Vector3(0, -5, 0), // 向下平移，靠近底部
+        fontSize: '10px'
+      },
+      // 五高法则标签（需随钻石模型旋转）
+      {
+        content: "高质量的\n产业生态",
+        position: P.industry,
+        fontSize: '10px',
+        offset: new THREE.Vector3(0, -0.3, 0),
+        rotate: true
+      },
+      {
+        content: "高远见的\n政策治理",
+        position: P.policy,
+        fontSize: '10px',
+        offset: new THREE.Vector3(0.1, -0.3, 0),
+        rotate: true
+      },
+      {
+        content: "高赋能的\n服务网络",
+        position: P.service,
+        fontSize: '10px',
+        offset: new THREE.Vector3(0.1, -0.3, 0),
+        rotate: true
+      },
+      {
+        content: "高共情的\n文化社群",
+        position: P.culture,
+        fontSize: '10px',
+        offset: new THREE.Vector3(-0.1, -0.3, 0),
+        rotate: true
+      },
+      {
+        content: "高适配的\n交往场景",
+        position: P.sceneC,
+        fontSize: '10px',
+        offset: new THREE.Vector3(-0.1, -0.3, 0),
+        rotate: true
+      }
+    ];
+
+    // 创建所有文本标签
+    textConfigs.forEach((config, index) => {
+      const div = document.createElement('div');
+      div.style.color = '#ffffff';
+      div.style.textShadow = '0 1px 2px rgba(0,0,0,0.25)';
+      div.style.whiteSpace = 'pre-line';
+      div.style.pointerEvents = 'none';
+      div.style.textAlign = 'center';
+
+      // 特殊处理TOP和全球首个创新区诊断体系的样式
+      if (config.customStyle) {
+        // 使用HTML结构：容器宽度由文字决定，logo与文字同宽并缩小垂直间距
+        div.innerHTML = '<div style="display:inline-block; text-align:center; width:max-content;">' +
+          '<img src="logo.png" alt="logo" style="width:60%; height:auto; display:block; margin:0 auto -40px auto;" />' +
+          '<div style="font-size: 14px; line-height:1; white-space: nowrap;">全球首个创新区诊断体系</div>' +
+          '</div>';
+      } else {
+        // 普通文本样式
+        div.style.font = `${config.fontWeight ? config.fontWeight + ' ' : ''}${config.fontSize} Arial`;
+        div.textContent = config.content;
+      }
+
+      const label = new CSS2DObject(div);
+
+      // 设置标签位置
+      const finalPosition = config.position.clone();
+      if (config.offset) {
+        finalPosition.add(config.offset);
+      }
+      label.position.copy(finalPosition);
+
+      // 根据标签类型决定添加到哪个组
+      // 使用每个配置项上的 rotate/clusterFixed 标志决定归属
+      if (config.rotate) {
+        rotatingGroup.add(label);
+      } else if (config.clusterFixed) {
+        clusterFixedGroup.add(label);
+      } else {
+        fixedGroup.add(label);
+      }
+    });
+
+    // Lines - 增强白色连线
+    const lineMat = new THREE.LineBasicMaterial({
+      color: 0xffffff,
+      fog: false
+    });
+
+    // 虚线材质
+    const dashedLineMat = new THREE.LineDashedMaterial({
+      color: 0xffffff,
+      dashSize: 0.02,
+      gapSize: 0.05,
+      fog: false
+    });
+
+
+
+    // 由于WebGL线宽限制，使用多通道渲染增强线条效果
+    function createEnhancedLine(a, b, groupToAdd = rotatingGroup) {
+      // 创建主要线条
+      const g = new THREE.BufferGeometry().setFromPoints([a, b]);
+      const line = new THREE.Line(g, lineMat);
+      groupToAdd.add(line);
+
+      // 创建第二条稍细的线条叠加，增强视觉效果
+      const lineMat2 = new THREE.LineBasicMaterial({
+        color: 0xffffff,
+        fog: false
+      });
+      const line2 = new THREE.Line(g, lineMat2);
+      groupToAdd.add(line2);
+    }
+
+    function line(a, b, groupToAdd = rotatingGroup) {
+      createEnhancedLine(a, b, groupToAdd);
+    }
+
+    // 创建虚线
+    function createDashedLine(a, b, groupToAdd = rotatingGroup) {
+      const g = new THREE.BufferGeometry().setFromPoints([a, b]);
+      const line = new THREE.Line(g, dashedLineMat);
+      // 计算虚线分段
+      line.computeLineDistances();
+      groupToAdd.add(line);
+
+      // 创建第二条虚线叠加，增强视觉效果
+      const line2 = new THREE.Line(g, dashedLineMat);
+      line2.computeLineDistances();
+      groupToAdd.add(line2);
+    }
+
+    function dashedLine(a, b, groupToAdd = rotatingGroup) {
+      createDashedLine(a, b, groupToAdd);
+    }
+
+    // 中间层五边形填充（淡粉色，如图片所示）
+    const pentagonPoints = [
+      P.policy,    // 高远见的政策治理
+      P.service,   // 高赋能的服务网络
+      P.culture,   // 高共情的文化社群
+      P.sceneC,    // 高适配的交往场景
+      P.industry   // 高质量的产业生态
+    ];
+
+    // 创建五边形几何体
+    const pentagonGeometry = new THREE.BufferGeometry();
+    const vertices = new Float32Array([
+      ...pentagonPoints[0].toArray(),
+      ...pentagonPoints[1].toArray(),
+      ...pentagonPoints[2].toArray(),
+      ...pentagonPoints[3].toArray(),
+      ...pentagonPoints[4].toArray()
+    ]);
+
+    pentagonGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+
+    // 设置三角形索引（将五边形分解为3个三角形）
+    const indices = new Uint16Array([
+      0, 1, 2,  // 三角形1
+      0, 2, 3,  // 三角形2
+      0, 3, 4   // 三角形3
+    ]);
+
+    pentagonGeometry.setIndex(new THREE.BufferAttribute(indices, 1));
+    pentagonGeometry.computeVertexNormals();
+
+    // 淡粉色材质（匹配图片中的填充色）
+    const pentagonMaterial = new THREE.MeshBasicMaterial({
+      color: 0xF5D0D5, // 淡粉色
+      transparent: true,
+      opacity: 0.8,    // 稍微提高不透明度以匹配图片效果
+      side: THREE.DoubleSide
+    });
+
+    const pentagonMesh = new THREE.Mesh(pentagonGeometry, pentagonMaterial);
+    rotatingGroup.add(pentagonMesh);
+
+    // 绘制所有连线
+    // 顶点（城市品牌）连接五边形的五个点
+    line(P.brand, P.industry, rotatingGroup);
+    line(P.brand, P.policy, rotatingGroup);
+    line(P.brand, P.service, rotatingGroup);
+    line(P.brand, P.culture, rotatingGroup);
+    line(P.brand, P.sceneC, rotatingGroup);
+
+    // 底点（城市决策）连接五边形的五个点
+    line(P.decision, P.industry, rotatingGroup);
+    line(P.decision, P.policy, rotatingGroup);
+    line(P.decision, P.service, rotatingGroup);
+    line(P.decision, P.culture, rotatingGroup);
+    line(P.decision, P.sceneC, rotatingGroup);
+
+    // 中心点连接五边形的五个点
+    line(P.center, P.industry, rotatingGroup);
+    line(P.center, P.policy, rotatingGroup);
+    line(P.center, P.service, rotatingGroup);
+    line(P.center, P.culture, rotatingGroup);
+    line(P.center, P.sceneC, rotatingGroup);
+
+    // 顶点到中点、中点到低点 - 虚线
+    dashedLine(P.brand, P.center, rotatingGroup);
+    dashedLine(P.center, P.decision, rotatingGroup);
+
+
+    // 中间五边形边界
+    line(P.industry, P.policy, rotatingGroup);
+    line(P.policy, P.service, rotatingGroup);
+    line(P.service, P.culture, rotatingGroup);
+    line(P.culture, P.sceneC, rotatingGroup);
+    line(P.sceneC, P.industry, rotatingGroup);
+
+    // Animate - 让中间的五高钻石模型和所有连线一起旋转
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // 旋转中间的五高钻石模型
+      rotatingGroup.rotation.y += 0.01;
+
+      renderer.render(scene, camera);
+      labelRenderer.render(scene, camera);
+    }
+    animate();
+
+    // Resize处理
+    function handleResize() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(width, height);
+      labelRenderer.setSize(width, height);
+
+      const newScaleFactor = Math.min(width, height) / 800;
+      rotatingGroup.scale.set(newScaleFactor, newScaleFactor, newScaleFactor);
+      clusterFixedGroup.scale.set(newScaleFactor, newScaleFactor, newScaleFactor);
+      fixedGroup.scale.set(newScaleFactor, newScaleFactor, newScaleFactor);
+    }
+
+    let resizeTimeout;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(handleResize, 250);
+    });
+
+    handleResize();
+
+    // 阻止默认触摸行为
+    document.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('gesturestart', (e) => {
+      e.preventDefault();
+    });
+
+    document.addEventListener('gesturechange', (e) => {
+      e.preventDefault();
+    });
+
+    document.addEventListener('gestureend', (e) => {
+      e.preventDefault();
+    });
+  </script>
+</body>
+
+</html>
