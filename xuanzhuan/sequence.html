@@ -97,7 +97,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             padding: 40px 30px;
             text-align: center;
         }
@@ -109,8 +108,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            flex: 1;
+            /* 占据剩余空间 */
         }
-
 
         .title {
             font-size: 120px;
@@ -135,7 +135,6 @@
             margin-bottom: 40px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             margin-left: auto;
             margin-right: auto;
             margin-top: 60px;
@@ -148,7 +147,8 @@
             color: white;
             line-height: 1.8;
             text-align: left;
-            margin-bottom: 30px;
+            margin-bottom: 1.8em;
+            /* 改为一行文字的高度 */
             letter-spacing: 0.5px;
         }
 
@@ -156,23 +156,34 @@
             margin-bottom: 0;
         }
 
+        /* 新增：针对直接在text-section内的最后一个段落 */
+        .text-section>.text-paragraph:last-child {
+            margin-bottom: 0;
+        }
+
         .signature-section {
             width: auto;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            margin-top: 30px;
+            align-items: flex-start;
+            /* 左对齐 */
+            justify-content: flex-end;
+            /* 底部对齐 */
+            margin-top: 54px;
+            /* 三行文字距离：18px * 1.8行高 * 3行 = 97.2px，调整为合适值 */
             padding-right: 0;
             gap: 8px;
             align-self: flex-end;
-            /* 让签名块贴合正文右侧 */
+            /* 右对齐 */
+            margin-left: auto;
+            /* 推到右侧 */
         }
 
         .signature-item {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
+            /* 左对齐 */
             gap: 8px;
         }
 
@@ -183,6 +194,27 @@
             order: 1;
         }
 
+        /* 新增紧凑签名样式 */
+        .compact-signature-names {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            /* 左对齐 */
+            gap: 2px;
+            /* 减小间距使文字更紧凑 */
+        }
+
+        .compact-signature-names .signature-name {
+            font-size: 12px;
+            /* 调小字体 */
+            letter-spacing: 1px;
+            /* 减小字间距 */
+            line-height: 1.2;
+            /* 调整行高使文字更紧凑 */
+            text-align: left;
+            /* 左对齐 */
+        }
+
         .signature-image {
             max-width: 130px;
             width: 100%;
@@ -190,6 +222,8 @@
             /* 将黑色签名转为白色（需签名为透明底黑色线条） */
             filter: brightness(0) invert(1);
             order: 2;
+            align-self: flex-start;
+            /* 图片左对齐 */
         }
 
         /* 响应式设计 */
@@ -227,27 +261,49 @@
             .text-paragraph {
                 font-size: 16px;
                 line-height: 1.7;
-                margin-bottom: 25px;
+                margin-bottom: 1.7em;
+                /* 改为一行文字的高度 */
                 text-align: left;
+            }
+
+            /* 新增：针对直接在text-section内的最后一个段落 */
+            .text-section>.text-paragraph:last-child {
+                margin-bottom: 0;
             }
 
             .signature-section {
                 padding-right: 20px;
-                justify-content: center;
-                margin-top: 30px;
+                justify-content: flex-end;
+                /* 底部对齐 */
+                margin-top: 48px;
+                /* 三行文字距离：16px * 1.7行高 * 3行 = 81.6px，调整为合适值 */
                 gap: 20px;
+                align-self: flex-end;
+                /* 右对齐 */
             }
 
             .signature-item {
                 gap: 6px;
+                align-items: flex-start;
+                /* 左对齐 */
             }
 
-            .signature-name {
-                font-size: 14px;
+            .compact-signature-names {
+                align-items: flex-start;
+                /* 左对齐 */
+            }
+
+            .compact-signature-names .signature-name {
+                font-size: 11px;
+                /* 在移动端进一步调小字体 */
+                text-align: left;
+                /* 左对齐 */
             }
 
             .signature-image {
                 max-width: 100px;
+                align-self: flex-start;
+                /* 图片左对齐 */
             }
         }
 
@@ -285,27 +341,49 @@
             .text-paragraph {
                 font-size: 14px;
                 line-height: 1.6;
-                margin-bottom: 20px;
+                margin-bottom: 1.6em;
+                /* 改为一行文字的高度 */
                 text-align: left;
+            }
+
+            /* 新增：针对直接在text-section内的最后一个段落 */
+            .text-section>.text-paragraph:last-child {
+                margin-bottom: 0;
             }
 
             .signature-section {
                 padding-right: 15px;
-                justify-content: center;
-                margin-top: 25px;
+                justify-content: flex-end;
+                /* 底部对齐 */
+                margin-top: 42px;
+                /* 三行文字距离：14px * 1.6行高 * 3行 = 67.2px，调整为合适值 */
                 gap: 15px;
+                align-self: flex-end;
+                /* 右对齐 */
             }
 
             .signature-item {
                 gap: 5px;
+                align-items: flex-start;
+                /* 左对齐 */
             }
 
-            .signature-name {
-                font-size: 13px;
+            .compact-signature-names {
+                align-items: flex-start;
+                /* 左对齐 */
+            }
+
+            .compact-signature-names .signature-name {
+                font-size: 10px;
+                /* 在小屏设备上进一步调小字体 */
+                text-align: left;
+                /* 左对齐 */
             }
 
             .signature-image {
                 max-width: 100px;
+                align-self: flex-start;
+                /* 图片左对齐 */
             }
         }
 
@@ -340,31 +418,53 @@
             .text-paragraph {
                 font-size: 13px;
                 line-height: 1.5;
-                margin-bottom: 18px;
+                margin-bottom: 1.5em;
+                /* 改为一行文字的高度 */
                 text-align: left;
+            }
+
+            /* 新增：针对直接在text-section内的最后一个段落 */
+            .text-section>.text-paragraph:last-child {
+                margin-bottom: 0;
             }
 
             .signature-section {
                 padding-right: 12px;
-                justify-content: center;
-                margin-top: 20px;
+                justify-content: flex-end;
+                /* 底部对齐 */
+                margin-top: 39px;
+                /* 三行文字距离：13px * 1.5行高 * 3行 = 58.5px，调整为合适值 */
                 gap: 12px;
+                align-self: flex-end;
+                /* 右对齐 */
             }
 
             .signature-item {
                 gap: 4px;
+                align-items: flex-start;
+                /* 左对齐 */
             }
 
-            .signature-name {
-                font-size: 12px;
+            .compact-signature-names {
+                align-items: flex-start;
+                /* 左对齐 */
+            }
+
+            .compact-signature-names .signature-name {
+                font-size: 9px;
+                /* 在极小屏设备上进一步调小字体 */
+                text-align: left;
+                /* 左对齐 */
             }
 
             .signature-image {
                 max-width: 80px;
+                align-self: flex-start;
+                /* 图片左对齐 */
             }
         }
     </style>
-    
+
     <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
 </head>
 
@@ -379,109 +479,115 @@
                 </p>
 
                 <p class="text-paragraph">感谢您的参与，让我们携手共创城市创新区新篇章。</p>
+            </div>
 
-                <div class="signature-section">
-                    <div class="signature-item">
+            <!-- 将签名部分移到 content-inner 内部，与正文保持自然流布局 -->
+            <div class="signature-section">
+                <div class="signature-item">
+                    <!-- 应用紧凑签名样式 -->
+                    <div class="compact-signature-names">
+                        <div class="signature-name">TOP创新区研究院创始人</div>
+                        <div class="signature-name">FTA GROUP合伙人、执行董事</div>
                         <div class="signature-name">施道红</div>
-                        <img src="手写签名.png" alt="签名" class="signature-image">
                     </div>
+                    <img src="手写签名.png" alt="签名" class="signature-image">
                 </div>
             </div>
         </div>
     </div>
-<script>
-// 1. 全局变量：存储自动跳转定时器（用于后续清除）
-  let autoJumpTimer;
-  // 2. 配置你的小程序首页路径（必须替换为真实路径！）
-  const HOME_PATH = '/pages/index/index';
-  // 页面加载完成后初始化所有功能
-  document.addEventListener('DOMContentLoaded', function() {
-    console.log("页面加载完成，初始化跳转功能");
+    <script>
+        // 1. 全局变量：存储自动跳转定时器（用于后续清除）
+        let autoJumpTimer;
+        // 2. 配置你的小程序首页路径（必须替换为真实路径！）
+        const HOME_PATH = '/pages/index/index';
+        // 页面加载完成后初始化所有功能
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log("页面加载完成，初始化跳转功能");
 
-    // 3. 启动 30 秒自动跳转
-    startAutoJump();
+            // 3. 启动 30 秒自动跳转
+            startAutoJump();
 
-    // 4. 绑定点击立即跳转事件
-    bindClickJump();
+            // 4. 绑定点击立即跳转事件
+            bindClickJump();
 
-    // 5. 监听页面隐藏（可选，防止切后台后定时器仍运行）
-    bindPageVisibilityChange();
-  });
-  /**
-   * 启动 30 秒自动跳转
-   */
-  function startAutoJump() {
-    // 清除可能存在的旧定时器（避免重复创建）
-    clearTimeout(autoJumpTimer);
-    // 新建 30 秒定时器（30000ms = 30秒）
-    autoJumpTimer = setTimeout(() => {
-      console.log("30秒倒计时结束，执行自动跳转");
-      jumpToHome();
-    }, 10000);
-  }
-
-  /**
-   * 绑定点击事件：点击页面任意位置立即跳转
-   */
-  function bindClickJump() {
-    document.body.addEventListener('click', function() {
-      console.log("检测到点击，执行立即跳转");
-      // 关键：先清除自动跳转定时器，避免30秒后重复跳转
-      clearTimeout(autoJumpTimer);
-      // 执行跳转
-      jumpToHome();
-    });
-  }
-  /**
-   * 核心跳转函数：兼容普通页面和 tabBar 页面
-   */
-  function jumpToHome() {
-    // 先尝试用 redirectTo 跳转（普通页面）
-    wx.miniProgram.reLaunch({
-      url: HOME_PATH,
-      success: () => {
-        console.log(`跳转成功！目标路径：${HOME_PATH}`);
-      },
-      fail: (err) => {
-        console.log(`redirectTo 跳转失败（可能是 tabBar 页面），错误信息：`, err);
-        // 失败后自动尝试 switchTab（tabBar 页面专用）
-        wx.miniProgram.switchTab({
-          url: HOME_PATH,
-         success: function() {
-                console.log("跳转成功");
-            },
-            fail: function(err) {
-                console.log("跳转失败原因：", err);
-                wx.miniProgram.switchTab({
-                    url: '/pages/index/index'
-                });
-            }
+            // 5. 监听页面隐藏（可选，防止切后台后定时器仍运行）
+            bindPageVisibilityChange();
         });
-      }
-    });
-  }
+        /**
+         * 启动 30 秒自动跳转
+         */
+        function startAutoJump() {
+            // 清除可能存在的旧定时器（避免重复创建）
+            clearTimeout(autoJumpTimer);
+            // 新建 30 秒定时器（30000ms = 30秒）
+            autoJumpTimer = setTimeout(() => {
+                console.log("30秒倒计时结束，执行自动跳转");
+                jumpToHome();
+            }, 10000);
+        }
 
- /**
-   * 监听页面隐藏/显示：页面隐藏时清除定时器（可选优化）
-   */
-  function bindPageVisibilityChange() {
-    document.addEventListener('visibilitychange', function() {
-      if (document.hidden) {
-        // 页面隐藏（如用户切后台、跳转离开），清除定时器
-        console.log("页面隐藏，清除自动跳转定时器");
-        clearTimeout(autoJumpTimer);
-      } else {
-        // 页面重新显示（如用户切回），重新启动自动跳转（可选，根据需求决定是否开启）
-        console.log("页面重新显示，重启 30 秒自动跳转");
-        startAutoJump();
-      }
-    });
-  }
+        /**
+         * 绑定点击事件：点击页面任意位置立即跳转
+         */
+        function bindClickJump() {
+            document.body.addEventListener('click', function () {
+                console.log("检测到点击，执行立即跳转");
+                // 关键：先清除自动跳转定时器，避免30秒后重复跳转
+                clearTimeout(autoJumpTimer);
+                // 执行跳转
+                jumpToHome();
+            });
+        }
+        /**
+         * 核心跳转函数：兼容普通页面和 tabBar 页面
+         */
+        function jumpToHome() {
+            // 先尝试用 redirectTo 跳转（普通页面）
+            wx.miniProgram.reLaunch({
+                url: HOME_PATH,
+                success: () => {
+                    console.log(`跳转成功！目标路径：${HOME_PATH}`);
+                },
+                fail: (err) => {
+                    console.log(`redirectTo 跳转失败（可能是 tabBar 页面），错误信息：`, err);
+                    // 失败后自动尝试 switchTab（tabBar 页面专用）
+                    wx.miniProgram.switchTab({
+                        url: HOME_PATH,
+                        success: function () {
+                            console.log("跳转成功");
+                        },
+                        fail: function (err) {
+                            console.log("跳转失败原因：", err);
+                            wx.miniProgram.switchTab({
+                                url: '/pages/index/index'
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        /**
+          * 监听页面隐藏/显示：页面隐藏时清除定时器（可选优化）
+          */
+        function bindPageVisibilityChange() {
+            document.addEventListener('visibilitychange', function () {
+                if (document.hidden) {
+                    // 页面隐藏（如用户切后台、跳转离开），清除定时器
+                    console.log("页面隐藏，清除自动跳转定时器");
+                    clearTimeout(autoJumpTimer);
+                } else {
+                    // 页面重新显示（如用户切回），重新启动自动跳转（可选，根据需求决定是否开启）
+                    console.log("页面重新显示，重启 30 秒自动跳转");
+                    startAutoJump();
+                }
+            });
+        }
         // document.addEventListener('DOMContentLoaded', function() {
         //     document.body.addEventListener('click', function() {
         //         console.log("HTML 被点击了！");
         //         wx.miniProgram.reLaunch({
-        //             url: '/pages/index/index', 
+        //             url: '/pages/index/index',
         //             success: function() {
         //                 console.log("跳转成功");
         //             },
