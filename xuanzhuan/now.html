@@ -89,14 +89,14 @@
       fail: (err) => {
         console.log(`redirectTo 跳转失败（可能是 tabBar 页面），错误信息：`, err);
         // 失败后自动尝试 switchTab（tabBar 页面专用）
-        wx.miniProgram.switchTab({
+        wx.miniProgram.reLaunch({
           url: HOME_PATH,
          success: function() {
                 console.log("跳转成功");
             },
             fail: function(err) {
                 console.log("跳转失败原因：", err);
-                wx.miniProgram.switchTab({
+                wx.miniProgram.reLaunch({
                     url: '/pages/login/login1'
                 });
             }
