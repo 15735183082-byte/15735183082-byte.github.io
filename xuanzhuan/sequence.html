@@ -488,21 +488,11 @@
 
     <script>
         const HOME_PATH = '/pages/index/index';
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     console.log("页面加载完成");
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("页面加载完成");
             
-        //     // 为底部按钮添加点击事件
-        //     const bottomButton = document.querySelector('.bottom-button');
-        //     bottomButton.addEventListener('click', function(e) {
-        //         e.preventDefault();
-        //         console.log("点击进入测评按钮被点击");
-                
-        //         // 这里可以添加跳转到测评页面的代码
-        //         // 例如：window.location.href = '测评页面URL';
-        //         // 或者使用微信小程序API跳转
-        //         // wx.miniProgram.navigateTo({ url: '测评页面路径' });
-        //     });
-        // });
+            bindClickJump();
+        });
         /**
          * 绑定点击事件：点击页面任意位置立即跳转
          */
