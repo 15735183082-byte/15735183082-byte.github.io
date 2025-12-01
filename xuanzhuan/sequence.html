@@ -12,13 +12,6 @@
             box-sizing: border-box;
         }
 
-        :root {
-            /* 桌面端微调：让正文块与“序”视觉中心对齐 */
-            --text-offset-desktop: 16px;
-            /* 向右偏移像素，可按需微调 */
-        }
-
-
         body {
             width: 100%;
             min-height: 100vh;
@@ -26,7 +19,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: center;
             font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', sans-serif;
             overflow-x: hidden;
             padding: 0;
@@ -97,6 +90,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             padding: 40px 30px;
             text-align: center;
         }
@@ -109,25 +103,17 @@
             flex-direction: column;
             align-items: center;
             flex: 1;
-            /* 占据剩余空间 */
+            justify-content: center;
         }
 
         .title {
-            font-size: 120px;
+            font-size: 40px;
             font-weight: bold;
             color: white;
             margin-bottom: 0;
             line-height: 1;
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
-
-        /* 桌面端：为适配汉字“序”的视觉中心，微调正文块向右对齐 */
-        @media (min-width: 769px) {
-            .text-section {
-                transform: translateX(var(--text-offset-desktop));
-            }
-        }
-
 
         .text-section {
             width: 100%;
@@ -148,7 +134,6 @@
             line-height: 1.8;
             text-align: left;
             margin-bottom: 1.8em;
-            /* 改为一行文字的高度 */
             letter-spacing: 0.5px;
         }
 
@@ -156,9 +141,9 @@
             margin-bottom: 0;
         }
 
-        /* 新增：针对直接在text-section内的最后一个段落 */
         .text-section>.text-paragraph:last-child {
             margin-bottom: 0;
+            padding: 0 20px;
         }
 
         .signature-section {
@@ -166,24 +151,18 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            /* 左对齐 */
             justify-content: flex-end;
-            /* 底部对齐 */
             margin-top: 54px;
-            /* 三行文字距离：18px * 1.8行高 * 3行 = 97.2px，调整为合适值 */
             padding-right: 0;
             gap: 8px;
             align-self: flex-end;
-            /* 右对齐 */
             margin-left: auto;
-            /* 推到右侧 */
         }
 
         .signature-item {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            /* 左对齐 */
             gap: 8px;
         }
 
@@ -194,36 +173,56 @@
             order: 1;
         }
 
-        /* 新增紧凑签名样式 */
         .compact-signature-names {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            /* 左对齐 */
             gap: 2px;
-            /* 减小间距使文字更紧凑 */
         }
 
         .compact-signature-names .signature-name {
             font-size: 12px;
-            /* 调小字体 */
             letter-spacing: 1px;
-            /* 减小字间距 */
             line-height: 1.2;
-            /* 调整行高使文字更紧凑 */
             text-align: left;
-            /* 左对齐 */
         }
 
         .signature-image {
             max-width: 130px;
             width: 100%;
             height: auto;
-            /* 将黑色签名转为白色（需签名为透明底黑色线条） */
             filter: brightness(0) invert(1);
             order: 2;
             align-self: flex-start;
-            /* 图片左对齐 */
+        }
+
+        /* 新增底部按钮样式 */
+        .bottom-button {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            color: rgb(229, 0, 18);
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .bottom-button:hover {
+            background-color: #f5f5f5;
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        .bottom-button:active {
+            transform: translateX(-50%) scale(0.98);
         }
 
         /* 响应式设计 */
@@ -245,7 +244,7 @@
             }
 
             .title {
-                font-size: 80px;
+                font-size: 40px;
                 margin-bottom: 0;
                 text-align: center;
             }
@@ -262,11 +261,9 @@
                 font-size: 16px;
                 line-height: 1.7;
                 margin-bottom: 1.7em;
-                /* 改为一行文字的高度 */
                 text-align: left;
             }
 
-            /* 新增：针对直接在text-section内的最后一个段落 */
             .text-section>.text-paragraph:last-child {
                 margin-bottom: 0;
             }
@@ -274,36 +271,35 @@
             .signature-section {
                 padding-right: 20px;
                 justify-content: flex-end;
-                /* 底部对齐 */
                 margin-top: 48px;
-                /* 三行文字距离：16px * 1.7行高 * 3行 = 81.6px，调整为合适值 */
                 gap: 20px;
                 align-self: flex-end;
-                /* 右对齐 */
+                margin-right: 20px;
             }
 
             .signature-item {
                 gap: 6px;
                 align-items: flex-start;
-                /* 左对齐 */
             }
 
             .compact-signature-names {
                 align-items: flex-start;
-                /* 左对齐 */
             }
 
             .compact-signature-names .signature-name {
                 font-size: 11px;
-                /* 在移动端进一步调小字体 */
                 text-align: left;
-                /* 左对齐 */
             }
 
             .signature-image {
                 max-width: 100px;
                 align-self: flex-start;
-                /* 图片左对齐 */
+            }
+
+            .bottom-button {
+                bottom: 30px;
+                padding: 10px 25px;
+                font-size: 16px;
             }
         }
 
@@ -325,7 +321,7 @@
             }
 
             .title {
-                font-size: 60px;
+                font-size: 40px;
                 margin-bottom: 0;
                 text-align: center;
             }
@@ -342,11 +338,10 @@
                 font-size: 14px;
                 line-height: 1.6;
                 margin-bottom: 1.6em;
-                /* 改为一行文字的高度 */
                 text-align: left;
+                 padding: 0 20px;
             }
 
-            /* 新增：针对直接在text-section内的最后一个段落 */
             .text-section>.text-paragraph:last-child {
                 margin-bottom: 0;
             }
@@ -354,36 +349,34 @@
             .signature-section {
                 padding-right: 15px;
                 justify-content: flex-end;
-                /* 底部对齐 */
                 margin-top: 42px;
-                /* 三行文字距离：14px * 1.6行高 * 3行 = 67.2px，调整为合适值 */
                 gap: 15px;
                 align-self: flex-end;
-                /* 右对齐 */
             }
 
             .signature-item {
                 gap: 5px;
                 align-items: flex-start;
-                /* 左对齐 */
             }
 
             .compact-signature-names {
                 align-items: flex-start;
-                /* 左对齐 */
             }
 
             .compact-signature-names .signature-name {
                 font-size: 10px;
-                /* 在小屏设备上进一步调小字体 */
                 text-align: left;
-                /* 左对齐 */
             }
 
             .signature-image {
                 max-width: 100px;
                 align-self: flex-start;
-                /* 图片左对齐 */
+            }
+
+            .bottom-button {
+                bottom: 20px;
+                padding: 8px 20px;
+                font-size: 14px;
             }
         }
 
@@ -405,7 +398,7 @@
             }
 
             .title {
-                font-size: 48px;
+                font-size: 40px;
                 margin-bottom: 0;
                 text-align: center;
             }
@@ -419,11 +412,9 @@
                 font-size: 13px;
                 line-height: 1.5;
                 margin-bottom: 1.5em;
-                /* 改为一行文字的高度 */
                 text-align: left;
             }
 
-            /* 新增：针对直接在text-section内的最后一个段落 */
             .text-section>.text-paragraph:last-child {
                 margin-bottom: 0;
             }
@@ -431,36 +422,34 @@
             .signature-section {
                 padding-right: 12px;
                 justify-content: flex-end;
-                /* 底部对齐 */
                 margin-top: 39px;
-                /* 三行文字距离：13px * 1.5行高 * 3行 = 58.5px，调整为合适值 */
                 gap: 12px;
                 align-self: flex-end;
-                /* 右对齐 */
             }
 
             .signature-item {
                 gap: 4px;
                 align-items: flex-start;
-                /* 左对齐 */
             }
 
             .compact-signature-names {
                 align-items: flex-start;
-                /* 左对齐 */
             }
 
             .compact-signature-names .signature-name {
                 font-size: 9px;
-                /* 在极小屏设备上进一步调小字体 */
                 text-align: left;
-                /* 左对齐 */
             }
 
             .signature-image {
                 max-width: 80px;
                 align-self: flex-start;
-                /* 图片左对齐 */
+            }
+
+            .bottom-button {
+                bottom: 15px;
+                padding: 6px 16px;
+                font-size: 13px;
             }
         }
     </style>
@@ -475,19 +464,17 @@
 
             <div class="text-section">
                 <p class="text-paragraph">
-                    为了更好地为城市片区、开发区、园区等各类有志于提升区域创新力的开发运营主体服务，TOP创新区研究院基于五“高”法则开发了全球创新区营造诊断系统，供测评其开发运营区域的创新力。
+                    为了更好地为城市片区、开发区、园区等各类有志于提升区域创新力的开发运营主体服务，TOP创新区研究院基于五"高"法则开发了全球创新区营造诊断系统，供测评其开发运营区域的创新力。
                 </p>
 
-                <p class="text-paragraph">感谢您的参与，让我们携手共创城市创新区新篇章。</p>
+                <p class="text-paragraph">感谢您的参与！</p>
             </div>
 
-            <!-- 将签名部分移到 content-inner 内部，与正文保持自然流布局 -->
             <div class="signature-section">
                 <div class="signature-item">
-                    <!-- 应用紧凑签名样式 -->
                     <div class="compact-signature-names">
                         <div class="signature-name">TOP创新区研究院创始人</div>
-                        <div class="signature-name">FTA GROUP合伙人、执行董事</div>
+                        <div class="signature-name">FTA GROUP执行董事</div>
                         <div class="signature-name">施道红</div>
                     </div>
                     <img src="手写签名.png" alt="签名" class="signature-image">
@@ -495,50 +482,37 @@
             </div>
         </div>
     </div>
+    
+    <!-- 新增底部按钮 -->
+    <a href="#" class="bottom-button">点击进入测评</a>
+
     <script>
-        // 1. 全局变量：存储自动跳转定时器（用于后续清除）
-        let autoJumpTimer;
-        // 2. 配置你的小程序首页路径（必须替换为真实路径！）
         const HOME_PATH = '/pages/index/index';
-        // 页面加载完成后初始化所有功能
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log("页面加载完成，初始化跳转功能");
-
-            // 3. 启动 30 秒自动跳转
-            startAutoJump();
-
-            // 4. 绑定点击立即跳转事件
-            bindClickJump();
-
-            // 5. 监听页面隐藏（可选，防止切后台后定时器仍运行）
-            bindPageVisibilityChange();
-        });
-        /**
-         * 启动 30 秒自动跳转
-         */
-        function startAutoJump() {
-            // 清除可能存在的旧定时器（避免重复创建）
-            clearTimeout(autoJumpTimer);
-            // 新建 30 秒定时器（30000ms = 30秒）
-            autoJumpTimer = setTimeout(() => {
-                console.log("30秒倒计时结束，执行自动跳转");
-                jumpToHome();
-            }, 10000);
-        }
-
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     console.log("页面加载完成");
+            
+        //     // 为底部按钮添加点击事件
+        //     const bottomButton = document.querySelector('.bottom-button');
+        //     bottomButton.addEventListener('click', function(e) {
+        //         e.preventDefault();
+        //         console.log("点击进入测评按钮被点击");
+                
+        //         // 这里可以添加跳转到测评页面的代码
+        //         // 例如：window.location.href = '测评页面URL';
+        //         // 或者使用微信小程序API跳转
+        //         // wx.miniProgram.navigateTo({ url: '测评页面路径' });
+        //     });
+        // });
         /**
          * 绑定点击事件：点击页面任意位置立即跳转
          */
         function bindClickJump() {
             document.body.addEventListener('click', function () {
-                console.log("检测到点击，执行立即跳转");
-                // 关键：先清除自动跳转定时器，避免30秒后重复跳转
-                clearTimeout(autoJumpTimer);
                 // 执行跳转
                 jumpToHome();
             });
         }
-        /**
+         /**
          * 核心跳转函数：兼容普通页面和 tabBar 页面
          */
         function jumpToHome() {
@@ -566,42 +540,7 @@
                 }
             });
         }
-
-        /**
-          * 监听页面隐藏/显示：页面隐藏时清除定时器（可选优化）
-          */
-        function bindPageVisibilityChange() {
-            document.addEventListener('visibilitychange', function () {
-                if (document.hidden) {
-                    // 页面隐藏（如用户切后台、跳转离开），清除定时器
-                    console.log("页面隐藏，清除自动跳转定时器");
-                    clearTimeout(autoJumpTimer);
-                } else {
-                    // 页面重新显示（如用户切回），重新启动自动跳转（可选，根据需求决定是否开启）
-                    console.log("页面重新显示，重启 30 秒自动跳转");
-                    startAutoJump();
-                }
-            });
-        }
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     document.body.addEventListener('click', function() {
-        //         console.log("HTML 被点击了！");
-        //         wx.miniProgram.reLaunch({
-        //             url: '/pages/index/index',
-        //             success: function() {
-        //                 console.log("跳转成功");
-        //             },
-        //             fail: function(err) {
-        //                 console.log("跳转失败原因：", err);
-        //                 wx.miniProgram.switchTab({
-        //                     url: '/pages/index/index'
-        //                 });
-        //             }
-        //         });
-        //     });
-        // });
     </script>
-
 </body>
 
 </html>
