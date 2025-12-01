@@ -23,6 +23,8 @@
             font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', sans-serif;
             overflow-x: hidden;
             padding: 0;
+            /* 给底部提示留空间，避免被遮挡 */
+            padding-bottom: 80px;
         }
 
         .header {
@@ -196,8 +198,8 @@
             align-self: flex-start;
         }
 
-        /* 新增底部按钮样式 */
-        .bottom-button {
+        /* 底部提示文字（和之前按钮样式一致） */
+        .bottom-tip {
             position: fixed;
             bottom: 40px;
             left: 50%;
@@ -208,24 +210,13 @@
             border-radius: 30px;
             font-size: 18px;
             font-weight: bold;
-            text-decoration: none;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            cursor: pointer;
             z-index: 100;
+            /* 禁止文字选中，避免点击时选中文本 */
+            user-select: none;
         }
 
-        .bottom-button:hover {
-            background-color: #f5f5f5;
-            transform: translateX(-50%) scale(1.05);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-        }
-
-        .bottom-button:active {
-            transform: translateX(-50%) scale(0.98);
-        }
-
-        /* 响应式设计 */
+        /* 响应式适配（和之前按钮一致） */
         @media (max-width: 768px) {
             .header {
                 padding: 15px 20px;
@@ -296,7 +287,7 @@
                 align-self: flex-start;
             }
 
-            .bottom-button {
+            .bottom-tip {
                 bottom: 30px;
                 padding: 10px 25px;
                 font-size: 16px;
@@ -339,7 +330,7 @@
                 line-height: 1.6;
                 margin-bottom: 1.6em;
                 text-align: left;
-                 padding: 0 20px;
+                padding: 0 20px;
             }
 
             .text-section>.text-paragraph:last-child {
@@ -373,7 +364,7 @@
                 align-self: flex-start;
             }
 
-            .bottom-button {
+            .bottom-tip {
                 bottom: 20px;
                 padding: 8px 20px;
                 font-size: 14px;
@@ -446,7 +437,7 @@
                 align-self: flex-start;
             }
 
-            .bottom-button {
+            .bottom-tip {
                 bottom: 15px;
                 padding: 6px 16px;
                 font-size: 13px;
@@ -482,27 +473,30 @@
             </div>
         </div>
     </div>
-    
-    <!-- 新增底部按钮 -->
-    <a href="#" class="bottom-button">点击进入测评</a>
+
+    <!-- 底部提示（样式和之前按钮完全一致） -->
+    <div class="bottom-tip">点击进入测评</div>
 
     <script>
         const HOME_PATH = '/pages/index/index';
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log("页面加载完成");
-            
+        // 页面加载完成后初始化所有功能
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log("页面加载完成，初始化跳转功能");
+
+            // 4. 绑定点击立即跳转事件
             bindClickJump();
+
         });
+        
         /**
          * 绑定点击事件：点击页面任意位置立即跳转
          */
         function bindClickJump() {
             document.body.addEventListener('click', function () {
-                // 执行跳转
                 jumpToHome();
             });
         }
-         /**
+        /**
          * 核心跳转函数：兼容普通页面和 tabBar 页面
          */
         function jumpToHome() {
