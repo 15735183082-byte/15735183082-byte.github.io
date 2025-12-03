@@ -122,6 +122,15 @@
       letter-spacing: 2px;
       order: 1;
     }
+    .signature-image {
+          max-width: 130px;
+          width: 100%;
+          height: auto;
+          filter: brightness(0) invert(1);
+          order: 2;
+          align-self: flex-start;
+      }
+
     
     .compact-signature-names {
       display: flex;
@@ -139,7 +148,7 @@
     
     .bottom-tip {
       position: fixed;
-      bottom: 40px;
+      bottom: 140px;
       left: 50%;
       transform: translateX(-50%);
       background-color: white;
@@ -192,7 +201,7 @@
       }
       
       .bottom-tip {
-        bottom: 30px;
+        bottom: 130px;
         padding: 10px 25px;
         font-size: 16px;
       }
@@ -229,7 +238,7 @@
       }
       
       .bottom-tip {
-        bottom: 20px;
+        bottom: 120px;
         padding: 8px 20px;
         font-size: 14px;
       }
@@ -260,6 +269,7 @@
             <div class="signature-name">FTA GROUP执行董事</div>
             <div class="signature-name">施道红</div>
           </div>
+          <img src="手写签名.png" alt="签名" class="signature-image">
         </div>
       </div>
     </div>
@@ -480,7 +490,9 @@
       div.style.textAlign = 'center';
 
       if (config.customStyle) {
+         // 使用HTML结构：容器宽度由文字决定，logo与文字同宽并缩小垂直间距
         div.innerHTML = '<div style="display:inline-block; text-align:center; width:max-content;">' +
+          '<img src="logo.png" alt="logo" style="width:70%; height:auto; display:block; margin:0 auto -40px auto;" />' +
           '<div style="font-size: 14px; line-height:1; white-space: nowrap;">全球首个城市创新区营造诊断系统</div>' +
           '</div>';
       } else {
