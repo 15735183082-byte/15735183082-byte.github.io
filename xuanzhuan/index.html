@@ -1,422 +1,668 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全球创新区诊断系统</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            width: 100%;
-            height: 100vh;
-            background-color: rgb(229, 0, 18);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', sans-serif;
-            overflow: hidden;
-        }
-
-        .container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px;
-            position: relative;
-            /* Add relative positioning */
-            z-index: 1;
-            /* Ensure container is on top */
-        }
-
-        .header {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px 0;
-            position: relative;
-            /* Ensure z-index is effective */
-            z-index: 2;
-            /* Force header to be on top */
-        }
-
-        .logo {
-            width: 120px;
-            /* Increased logo size */
-            margin-bottom: 20px;
-        }
-
-        .logo img {
-            width: 100%;
-            height: auto;
-        }
-
-        .title {
-            font-size: 24px;
-            color: white;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.8);
-            text-align: center;
-        }
-
-        .canvas-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 0;
-            /* Ensure canvas is in the background */
-        }
-
-        canvas {
-            max-width: 100%;
-            max-height: 100%;
-            display: block;
-        }
-
-        .footer {
-            width: 100%;
-            text-align: center;
-            padding: 20px 0;
-            color: white;
-            font-size: 12px;
-        }
-
-        .footer-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .footer-subtitle {
-            font-size: 11px;
-            opacity: 0.8;
-            line-height: 1.5;
-        }
-
-        @media (max-width: 768px) {
-            .title {
-                font-size: 20px;
-            }
-
-            .subtitle {
-                font-size: 12px;
-            }
-
-            .logo {
-                width: 60px;
-                height: 60px;
-            }
-
-            .footer-title {
-                font-size: 16px;
-            }
-
-            .footer-subtitle {
-                font-size: 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .title {
-                font-size: 18px;
-            }
-
-            .subtitle {
-                font-size: 11px;
-            }
-
-            .logo {
-                width: 50px;
-                height: 50px;
-                margin-bottom: 15px;
-            }
-
-            .container {
-                padding: 15px;
-            }
-
-            .header {
-                padding: 15px 0;
-            }
-
-            .footer {
-                padding: 15px 0;
-            }
-
-            .footer-title {
-                font-size: 14px;
-            }
-
-            .footer-subtitle {
-                font-size: 9px;
-            }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>全球首个城市创新区营造诊断系统</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background: #e50012;
+      font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', sans-serif;
+      touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    
+    #three-container, #sequence-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transition: opacity 1s ease-in-out;
+    }
+    
+    #sequence-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #e50012;
+      padding: 40px 30px 80px;
+      opacity: 0;
+    }
+    
+    .sequence-active #three-container {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .sequence-active #sequence-container {
+      display: flex;
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    .content-inner {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .title {
+      font-size: 40px;
+      font-weight: bold;
+      color: white;
+      margin-bottom: 0;
+      line-height: 1;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .text-section {
+      width: 100%;
+      max-width: 520px;
+      margin-bottom: 40px;
+      display: flex;
+      flex-direction: column;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 60px;
+      text-align: left;
+      align-items: stretch;
+    }
+    
+    .text-paragraph {
+      font-size: 18px;
+      color: white;
+      line-height: 1.8;
+      text-align: left;
+      margin-bottom: 1.8em;
+      letter-spacing: 0.5px;
+    }
+    
+    .text-paragraph:last-child {
+      margin-bottom: 0;
+    }
+    
+    .signature-section {
+      width: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-end;
+      margin-top: 54px;
+      padding-right: 0;
+      gap: 8px;
+      align-self: flex-end;
+      margin-left: auto;
+    }
+    
+    .signature-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    
+    .signature-name {
+      font-size: 16px;
+      color: white;
+      letter-spacing: 2px;
+      order: 1;
+    }
+    
+    .compact-signature-names {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+    
+    .compact-signature-names .signature-name {
+      font-size: 12px;
+      letter-spacing: 1px;
+      line-height: 1.2;
+      text-align: left;
+    }
+    
+    .bottom-tip {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: white;
+      color: rgb(229, 0, 18);
+      padding: 12px 30px;
+      border-radius: 30px;
+      font-size: 18px;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      z-index: 100;
+      user-select: none;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+      cursor: pointer;
+    }
+    
+    .sequence-active .bottom-tip {
+      opacity: 1;
+    }
+    
+    /* 响应式适配 */
+    @media (max-width: 768px) {
+      #sequence-container {
+        padding: 30px 20px 70px 20px;
+      }
+      
+      .title {
+        font-size: 36px;
+      }
+      
+      .text-section {
+        margin-top: 40px;
+        padding: 0 20px;
+      }
+      
+      .text-paragraph {
+        font-size: 16px;
+        line-height: 1.7;
+        margin-bottom: 1.7em;
+      }
+      
+      .signature-section {
+        margin-top: 48px;
+        gap: 20px;
+        margin-right: 20px;
+      }
+      
+      .compact-signature-names .signature-name {
+        font-size: 11px;
+      }
+      
+      .bottom-tip {
+        bottom: 30px;
+        padding: 10px 25px;
+        font-size: 16px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      #sequence-container {
+        padding: 20px 15px 60px 15px;
+      }
+      
+      .title {
+        font-size: 32px;
+      }
+      
+      .text-section {
+        margin-top: 30px;
+        padding: 0 15px;
+      }
+      
+      .text-paragraph {
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 1.6em;
+        padding: 0 20px;
+      }
+      
+      .signature-section {
+        margin-top: 42px;
+        gap: 15px;
+      }
+      
+      .compact-signature-names .signature-name {
+        font-size: 10px;
+      }
+      
+      .bottom-tip {
+        bottom: 20px;
+        padding: 8px 20px;
+        font-size: 14px;
+      }
+    }
+  </style>
+  <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
 </head>
-
 <body>
-    <div class="canvas-container">
-        <canvas id="canvas"></canvas>
-    </div>
-    <div class="container">
-        <div class="header">
-            <div class="logo">
-                <img src="logo.png" alt="Logo">
-            </div>
-            <div class="title">城市品牌</div>
+  <!-- 3D场景容器 -->
+  <div id="three-container"></div>
+
+  <!-- 序言页面容器 -->
+  <div id="sequence-container">
+    <div class="content-inner">
+      <div class="title">序</div>
+      
+      <div class="text-section">
+        <p class="text-paragraph">
+          为了更好地为城市片区、开发区、园区等各类有志于提升区域创新力的开发运营主体服务，TOP创新区研究院基于五"高"法则开发了全球创新区营造诊断系统，供测评其开发运营区域的创新力。
+        </p>
+        <p class="text-paragraph">感谢您的参与！</p>
+      </div>
+      
+      <div class="signature-section">
+        <div class="signature-item">
+          <div class="compact-signature-names">
+            <div class="signature-name">TOP创新区研究院创始人</div>
+            <div class="signature-name">FTA GROUP执行董事</div>
+            <div class="signature-name">施道红</div>
+          </div>
         </div>
-
-        <div class="footer">
-            <div class="footer-title">城市决策</div>
-            <div class="footer-subtitle" style="margin-top: 10px;">TOP创新区研究院<br>FTA Group</div>
-        </div>
+      </div>
     </div>
+    
+    <!-- 底部提示 -->
+    <div class="bottom-tip">点击进入测评</div>
+  </div>
 
-    <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.161.0/build/three.module.js"
+      }
+    }
+  </script>
 
-        // 响应式设置canvas大小
-        function resizeCanvas() {
-            const container = canvas.parentElement;
-            const dpr = window.devicePixelRatio || 1;
-            const width = Math.min(container.clientWidth, 400);
-            const height = Math.min(container.clientHeight, 400);
-            // Set the CSS size
-            canvas.style.width = width + 'px';
-            canvas.style.height = height + 'px';
-            // Set the internal pixel buffer size scaled by DPR
-            canvas.width = Math.round(width * dpr);
-            canvas.height = Math.round(height * dpr);
-            // Prepare context to draw in CSS pixels
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        }
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'https://unpkg.com/three@0.161.0/examples/jsm/controls/OrbitControls.js';
+    import { CSS2DRenderer, CSS2DObject } from 'https://unpkg.com/three@0.161.0/examples/jsm/renderers/CSS2DRenderer.js';
 
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
+    let animationId;
+    let transitionStarted = false;
+    let autoTransitionTimer;
 
-        // 钻石顶点坐标
-        const vertices = [
-            { x: 0, y: -0.75, z: 0 }, // Top vertex (height 0.75)
-            // Middle vertices (pentagon)
-            { x: 1, y: 0, z: 0 },
-            { x: Math.cos(2 * Math.PI / 5), y: 0, z: Math.sin(2 * Math.PI / 5) },
-            { x: Math.cos(4 * Math.PI / 5), y: 0, z: Math.sin(4 * Math.PI / 5) },
-            { x: Math.cos(6 * Math.PI / 5), y: 0, z: Math.sin(6 * Math.PI / 5) },
-            { x: Math.cos(8 * Math.PI / 5), y: 0, z: Math.sin(8 * Math.PI / 5) },
-            { x: 0, y: 1.5, z: 0 }  // Bottom vertex (height 1.5)
-        ];
+    // 初始化Three.js场景
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0xe50012, 0.18);
 
-        // 文字标签
-        const labels = [
-            '高远见的政策治理',
-            '高质量的产业生态',
-            '高适配的交往场景',
-            '高赋能的服务网络',
-            '高共情的文化社群'
-        ];
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 1.6, 6);
 
-        // 每个标签的两行文本，确保更清晰
-        const labelLines = [
-            ['高远见的', '政策治理'],
-            ['高质量的', '产业生态'],
-            ['高适配的', '交往场景'],
-            ['高赋能的', '服务网络'],
-            ['高共情的', '文化社群']
-        ];
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setClearColor(0xe50012);
+    document.getElementById('three-container').appendChild(renderer.domElement);
 
+    const labelRenderer = new CSS2DRenderer();
+    labelRenderer.setSize(window.innerWidth, window.innerHeight);
+    labelRenderer.domElement.style.position = 'absolute';
+    labelRenderer.domElement.style.top = '0';
+    labelRenderer.domElement.style.left = '0';
+    labelRenderer.domElement.style.pointerEvents = 'none';
+    document.getElementById('three-container').appendChild(labelRenderer.domElement);
 
-        let rotation = 0;
+    // Controls - 禁用所有交互
+    const controls = new OrbitControls(camera, labelRenderer.domElement);
+    controls.enableDamping = false;
+    controls.enablePan = false;
+    controls.enableZoom = false;
+    controls.enableRotate = false;
+    controls.enabled = false;
 
-        function rotatePoint(point, angleX, angleY) {
-            // 1. Rotate around Y-axis (spin)
-            const cosY = Math.cos(angleY);
-            const sinY = Math.sin(angleY);
-            const x1 = point.x * cosY - point.z * sinY;
-            const z1 = point.x * sinY + point.z * cosY;
+    // 组织结构
+    const clusterGroup = new THREE.Group();
+    scene.add(clusterGroup);
 
-            // 2. Rotate around X-axis (tilt)
-            const cosX = Math.cos(angleX);
-            const sinX = Math.sin(angleX);
-            const y2 = point.y * cosX - z1 * sinX;
-            const z2 = point.y * sinX + z1 * cosX;
+    const rotatingGroup = new THREE.Group();
+    const clusterFixedGroup = new THREE.Group();
+    const fixedGroup = new THREE.Group();
 
-            return {
-                x: x1,
-                y: y2,
-                z: z2
-            };
-        }
+    clusterGroup.add(rotatingGroup);
+    clusterGroup.add(clusterFixedGroup);
+    scene.add(fixedGroup);
 
-        function project(point, scale) {
-            const distance = 5;
-            const z = point.z + distance;
-            const scale2d = scale / z;
+    // 调整图形大小比例
+    const scaleFactor = Math.min(window.innerWidth, window.innerHeight) / 800;
+    rotatingGroup.scale.set(scaleFactor, scaleFactor, scaleFactor);
+    clusterFixedGroup.scale.set(scaleFactor, scaleFactor, scaleFactor);
+    fixedGroup.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
-            return {
-                x: point.x * scale2d,
-                y: point.y * scale2d,
-                z: z
-            };
-        }
+    // 创建正五边形顶点
+    function createPentagonVertices(radius, centerY) {
+      const vertices = [];
+      for (let i = 0; i < 5; i++) {
+        const angle = (i * 2 * Math.PI) / 5 - Math.PI / 2;
+        const x = radius * Math.cos(angle);
+        const z = radius * Math.sin(angle);
+        vertices.push(new THREE.Vector3(x, centerY, z));
+      }
+      return vertices;
+    }
 
+    // 使用正五边形顶点
+    const radius = 1.0;
+    const diamondScale = 1.5;
+    const manualClusterYOffset = -1.5;
+    const centerY = 1.3;
+    const pentagonVertices = createPentagonVertices(radius, centerY);
 
-        // Helper to draw rounded rectangle
-        function drawRoundedRect(ctx, x, y, width, height, radius = 6) {
-            const r = Math.min(radius, width / 2, height / 2);
-            ctx.beginPath();
-            ctx.moveTo(x + r, y);
-            ctx.lineTo(x + width - r, y);
-            ctx.quadraticCurveTo(x + width, y, x + width, y + r);
-            ctx.lineTo(x + width, y + height - r);
-            ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
-            ctx.lineTo(x + r, y + height);
-            ctx.quadraticCurveTo(x, y + height, x, y + height - r);
-            ctx.lineTo(x, y + r);
-            ctx.quadraticCurveTo(x, y, x + r, y);
-            ctx.closePath();
-        }
+    // Points
+    const P = {
+      brand: new THREE.Vector3(0, 2, 0),
+      industry: pentagonVertices[0],
+      policy: pentagonVertices[1],
+      service: pentagonVertices[2],
+      culture: pentagonVertices[3],
+      sceneC: pentagonVertices[4],
+      decision: new THREE.Vector3(0, -0.5, 0),
+      center: new THREE.Vector3(0, centerY, 0)
+    };
 
-        function drawDiamond() {
-            const dpr = window.devicePixelRatio || 1;
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-            const drawWidth = canvas.width / dpr;
-            const drawHeight = canvas.height / dpr;
-            ctx.clearRect(0, 0, drawWidth, drawHeight);
+    if (diamondScale !== 1) {
+      const pivot = new THREE.Vector3(0, centerY, 0);
+      const keys = ['brand', 'industry', 'policy', 'service', 'culture', 'sceneC', 'decision'];
+      for (const k of keys) {
+        P[k] = P[k].clone().sub(pivot).multiplyScalar(diamondScale).add(pivot);
+      }
+    }
 
-            const centerX = drawWidth / 2;
-            const centerY = drawHeight / 2;
-            const scale = Math.min(drawWidth, drawHeight) * 1.2
+    // 将三者组的纵向中心对齐到屏幕中心
+    const midY = (P.brand.y + P.decision.y) / 2;
+    clusterGroup.position.y = -midY + manualClusterYOffset;
 
-            const angleX = -0.3; // Negative angle to tilt top vertex outwards
-            const angleY = rotation;
+    (function centerClusterToScreen() {
+      const localMidY = (P.brand.y + P.decision.y) / 2;
+      const worldMid = clusterGroup.localToWorld(new THREE.Vector3(0, localMidY, 0));
+      const v = worldMid.clone().project(camera);
+      const ndcY = v.y;
+      const eps = 0.01;
+      clusterGroup.position.y += eps;
+      const worldMid2 = clusterGroup.localToWorld(new THREE.Vector3(0, localMidY, 0));
+      const ndcY2 = worldMid2.clone().project(camera).y;
+      clusterGroup.position.y -= eps;
+      const deriv = (ndcY2 - ndcY) / eps || 1e-6;
+      const delta = (-ndcY / deriv) + manualClusterYOffset;
+      clusterGroup.position.y += delta;
+    })();
 
-            const rotatedVertices = vertices.map(v => rotatePoint(v, angleX, angleY));
+    // Nodes - 白色节点
+    const mat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const big = new THREE.SphereGeometry(0.03, 24, 24);
+    const small = new THREE.SphereGeometry(0.03, 24, 24);
 
-            const projectedVertices = rotatedVertices.map(v => {
-                const proj = project(v, scale);
-                return {
-                    x: centerX + proj.x,
-                    y: centerY + proj.y,
-                    z: proj.z
-                };
-            });
+    Object.keys(P).forEach((key, i) => {
+      if (key === 'brand' || key === 'decision') {
+        const m = new THREE.Mesh(big, mat);
+        m.position.copy(P[key]);
+        clusterFixedGroup.add(m);
+      } else {
+        const m = new THREE.Mesh(i < 2 ? big : small, mat);
+        m.position.copy(P[key]);
+        rotatingGroup.add(m);
+      }
+    });
 
-            // 绘制边线
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
-            ctx.lineWidth = 1.5;
+    // 创建所有文本标签
+    const textConfigs = [
+      {
+        content: "城市品牌",
+        position: P.brand,
+        fontSize: '14px',
+        offset: new THREE.Vector3(0, 0.2, 0),
+        clusterFixed: true
+      },
+      {
+        content: "城市决策",
+        position: P.decision,
+        fontSize: '14px',
+        offset: new THREE.Vector3(0, -0.2, 0),
+        clusterFixed: true
+      },
+      {
+        content: "TOP\n全球首个城市创新区营造诊断系统",
+        position: new THREE.Vector3(0, 3.5, 0),
+        fontSize: '16px',
+        customStyle: true
+      },
+      {
+        content: "TOP创新区研究院\nFTA Group",
+        position: new THREE.Vector3(0, -5, 0),
+        fontSize: '10px'
+      },
+      {
+        content: "高质量的\n产业生态",
+        position: P.industry,
+        fontSize: '10px',
+        offset: new THREE.Vector3(0, -0.3, 0),
+        rotate: true
+      },
+      {
+        content: "高远见的\n政策治理",
+        position: P.policy,
+        fontSize: '10px',
+        offset: new THREE.Vector3(0.1, -0.3, 0),
+        rotate: true
+      },
+      {
+        content: "高赋能的\n服务网络",
+        position: P.service,
+        fontSize: '10px',
+        offset: new THREE.Vector3(0.1, -0.3, 0),
+        rotate: true
+      },
+      {
+        content: "高共情的\n文化社群",
+        position: P.culture,
+        fontSize: '10px',
+        offset: new THREE.Vector3(-0.1, -0.3, 0),
+        rotate: true
+      },
+      {
+        content: "高适配的\n交往场景",
+        position: P.sceneC,
+        fontSize: '10px',
+        offset: new THREE.Vector3(-0.1, -0.3, 0),
+        rotate: true
+      }
+    ];
 
-            const edges = [
-                [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], // Top cone
-                [1, 2], [2, 3], [3, 4], [4, 5], [5, 1], // Middle ring
-                [6, 1], [6, 2], [6, 3], [6, 4], [6, 5]  // Bottom cone
-            ];
+    textConfigs.forEach((config, index) => {
+      const div = document.createElement('div');
+      div.style.color = '#ffffff';
+      div.style.textShadow = '0 1px 2px rgba(0,0,0,0.25)';
+      div.style.whiteSpace = 'pre-line';
+      div.style.pointerEvents = 'none';
+      div.style.textAlign = 'center';
 
-            for (const edge of edges) {
-                const p1 = projectedVertices[edge[0]];
-                const p2 = projectedVertices[edge[1]];
-                ctx.beginPath();
-                ctx.moveTo(p1.x, p1.y);
-                ctx.lineTo(p2.x, p2.y);
-                ctx.stroke();
-            }
+      if (config.customStyle) {
+        div.innerHTML = '<div style="display:inline-block; text-align:center; width:max-content;">' +
+          '<div style="font-size: 14px; line-height:1; white-space: nowrap;">全球首个城市创新区营造诊断系统</div>' +
+          '</div>';
+      } else {
+        div.style.font = `${config.fontSize} Arial`;
+        div.textContent = config.content;
+      }
 
-            // 绘制中间平面底纹
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-            ctx.beginPath();
-            ctx.moveTo(projectedVertices[1].x, projectedVertices[1].y);
-            for (let i = 2; i <= 5; i++) {
-                ctx.lineTo(projectedVertices[i].x, projectedVertices[i].y);
-            }
-            ctx.closePath();
-            ctx.fill();
+      const label = new CSS2DObject(div);
+      const finalPosition = config.position.clone();
+      if (config.offset) {
+        finalPosition.add(config.offset);
+      }
+      label.position.copy(finalPosition);
 
-            // 绘制顶点
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-            for (const vertex of projectedVertices) {
-                ctx.beginPath();
-                ctx.arc(vertex.x, vertex.y, 3, 0, Math.PI * 2);
-                ctx.fill();
-            }
+      if (config.rotate) {
+        rotatingGroup.add(label);
+      } else if (config.clusterFixed) {
+        clusterFixedGroup.add(label);
+      } else {
+        fixedGroup.add(label);
+      }
+    });
 
-            // 绘制文字标签（带半透明底和投影，清晰度更高）
-            const labelPositions = [
-                { vertex: 1, offset: { x: 0, y: 25 } },
-                { vertex: 2, offset: { x: 0, y: 25 } },
-                { vertex: 3, offset: { x: 0, y: 25 } },
-                { vertex: 4, offset: { x: 0, y: 25 } },
-                { vertex: 5, offset: { x: 0, y: 25 } }
-            ];
+    // Lines - 增强白色连线
+    const lineMat = new THREE.LineBasicMaterial({
+      color: 0xffffff,
+      fog: false
+    });
 
-            const lineHeight = 18;
-            const padX = 10;
-            const padY = 8;
-            ctx.font = 'bold 14px "San Francisco", sans-serif';
-            ctx.textAlign = 'center';
+    const dashedLineMat = new THREE.LineDashedMaterial({
+      color: 0xffffff,
+      dashSize: 0.02,
+      gapSize: 0.05,
+      fog: false
+    });
 
-            for (let i = 0; i < labelPositions.length; i++) {
-                const pos = labelPositions[i];
-                const vertex = projectedVertices[pos.vertex];
-                const x = vertex.x + pos.offset.x;
-                const y = vertex.y + pos.offset.y;
+    function createEnhancedLine(a, b, groupToAdd = rotatingGroup) {
+      const g = new THREE.BufferGeometry().setFromPoints([a, b]);
+      const line = new THREE.Line(g, lineMat);
+      groupToAdd.add(line);
 
-                const lines = labelLines[i];
-                // 计算背景宽高
-                const w = Math.max(...lines.map(t => ctx.measureText(t).width)) + padX * 2;
-                const h = lines.length * lineHeight + padY * 2;
-                const bx = x - w / 2;
-                const by = y - padY; // 顶点正下方，稍微上移Padding
+      const lineMat2 = new THREE.LineBasicMaterial({
+        color: 0xffffff,
+        fog: false
+      });
+      const line2 = new THREE.Line(g, lineMat2);
+      groupToAdd.add(line2);
+    }
 
-                // 背景
-                ctx.save();
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
-                ctx.lineWidth = 1;
-                drawRoundedRect(ctx, bx, by, w, h, 6);
-                ctx.fill();
-                ctx.stroke();
+    function line(a, b, groupToAdd = rotatingGroup) {
+      createEnhancedLine(a, b, groupToAdd);
+    }
 
-                // 文字
-                ctx.fillStyle = 'white';
-                ctx.textBaseline = 'top';
-                ctx.shadowColor = 'rgba(0,0,0,0.35)';
-                ctx.shadowBlur = 2;
-                ctx.shadowOffsetY = 1;
-                for (let j = 0; j < lines.length; j++) {
-                    const line = lines[j];
-                    ctx.fillText(line, x, by + padY + j * lineHeight);
-                }
-                ctx.restore();
-            }
+    function createDashedLine(a, b, groupToAdd = rotatingGroup) {
+      const g = new THREE.BufferGeometry().setFromPoints([a, b]);
+      const line = new THREE.Line(g, dashedLineMat);
+      line.computeLineDistances();
+      groupToAdd.add(line);
 
-            rotation -= 0.005;
+      const line2 = new THREE.Line(g, dashedLineMat);
+      line2.computeLineDistances();
+      groupToAdd.add(line2);
+    }
 
-            requestAnimationFrame(drawDiamond);
-        }
+    function dashedLine(a, b, groupToAdd = rotatingGroup) {
+      createDashedLine(a, b, groupToAdd);
+    }
 
-        drawDiamond();
-    </script>
+    // 中间层五边形填充
+    const pentagonPoints = [
+      P.policy, P.service, P.culture, P.sceneC, P.industry
+    ];
+
+    const pentagonGeometry = new THREE.BufferGeometry();
+    const vertices = new Float32Array([
+      ...pentagonPoints[0].toArray(),
+      ...pentagonPoints[1].toArray(),
+      ...pentagonPoints[2].toArray(),
+      ...pentagonPoints[3].toArray(),
+      ...pentagonPoints[4].toArray()
+    ]);
+
+    pentagonGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    const indices = new Uint16Array([0, 1, 2, 0, 2, 3, 0, 3, 4]);
+    pentagonGeometry.setIndex(new THREE.BufferAttribute(indices, 1));
+    pentagonGeometry.computeVertexNormals();
+
+    const pentagonMaterial = new THREE.MeshBasicMaterial({
+      color: 0xF5D0D5,
+      transparent: true,
+      opacity: 0.8,
+      side: THREE.DoubleSide
+    });
+
+    const pentagonMesh = new THREE.Mesh(pentagonGeometry, pentagonMaterial);
+    rotatingGroup.add(pentagonMesh);
+
+    // 绘制所有连线
+    line(P.brand, P.industry, rotatingGroup);
+    line(P.brand, P.policy, rotatingGroup);
+    line(P.brand, P.service, rotatingGroup);
+    line(P.brand, P.culture, rotatingGroup);
+    line(P.brand, P.sceneC, rotatingGroup);
+
+    line(P.decision, P.industry, rotatingGroup);
+    line(P.decision, P.policy, rotatingGroup);
+    line(P.decision, P.service, rotatingGroup);
+    line(P.decision, P.culture, rotatingGroup);
+    line(P.decision, P.sceneC, rotatingGroup);
+
+    line(P.center, P.industry, rotatingGroup);
+    line(P.center, P.policy, rotatingGroup);
+    line(P.center, P.service, rotatingGroup);
+    line(P.center, P.culture, rotatingGroup);
+    line(P.center, P.sceneC, rotatingGroup);
+
+    dashedLine(P.brand, P.center, rotatingGroup);
+    dashedLine(P.center, P.decision, rotatingGroup);
+
+    line(P.industry, P.policy, rotatingGroup);
+    line(P.policy, P.service, rotatingGroup);
+    line(P.service, P.culture, rotatingGroup);
+    line(P.culture, P.sceneC, rotatingGroup);
+    line(P.sceneC, P.industry, rotatingGroup);
+
+    // 动画函数
+    function animate() {
+      animationId = requestAnimationFrame(animate);
+      rotatingGroup.rotation.y += 0.01;
+      renderer.render(scene, camera);
+      labelRenderer.render(scene, camera);
+    }
+    animate();
+
+    // 过渡到sequence页面
+    function transitionToSequence() {
+      if (transitionStarted) return;
+      transitionStarted = true;
+      
+      // 清除自动过渡计时器
+      clearTimeout(autoTransitionTimer);
+      
+      // 停止动画
+      cancelAnimationFrame(animationId);
+      
+      // 显示序言页面
+      document.body.classList.add('sequence-active');
+    }
+
+    // 5秒后自动过渡到sequence
+    autoTransitionTimer = setTimeout(transitionToSequence, 5000);
+
+    // 点击index页面直接过渡到sequence
+    document.getElementById('three-container').addEventListener('click', transitionToSequence);
+
+    // sequence页面点击跳转到小程序
+    document.querySelector('.bottom-tip').addEventListener('click', function() {
+      if (window.wx && wx.miniProgram) {
+        wx.miniProgram.reLaunch({
+          url: '/pages/index/index',
+          success: () => console.log('跳转到小程序首页成功'),
+          fail: (err) => {
+            console.error('跳转失败:', err);
+            // 兜底方案
+            wx.miniProgram.reLaunch({ url: '/pages/index/index' });
+          }
+        });
+      }
+    });
+
+    // 窗口大小调整
+    window.addEventListener('resize', function() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      labelRenderer.setSize(window.innerWidth, window.innerHeight);
+
+      const newScaleFactor = Math.min(window.innerWidth, window.innerHeight) / 800;
+      rotatingGroup.scale.set(newScaleFactor, newScaleFactor, newScaleFactor);
+      clusterFixedGroup.scale.set(newScaleFactor, newScaleFactor, newScaleFactor);
+      fixedGroup.scale.set(newScaleFactor, newScaleFactor, newScaleFactor);
+    });
+  </script>
 </body>
-
 </html>
